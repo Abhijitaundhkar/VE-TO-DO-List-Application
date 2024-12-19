@@ -1,18 +1,13 @@
 const express = require("express");
 const {
   registerUser,
-  updateUser,
-  deleteUser,
   getAllUser,
-  getUserById,
   loginUser,
   logoutUser,
 } = require("../controller/authController");
 const { protect } = require("../middleware/authMiddleware");
 
 const router = express.Router();
-
-//all register and login routes
 
 /**
  * @swagger
@@ -27,40 +22,113 @@ const router = express.Router();
  *       properties:
  *         username:
  *           type: string
- *           description: The user title
+ *           description: The user's username
  *         email:
  *           type: string
- *           description: The user email
+ *           description: The user's email address
  *         password:
  *           type: string
- *           description: The user password
- *
+ *           description: The user's password
+ *       example:
+ *         username: john_doe
+ *         email: john@example.com
+ *         password: securepassword123
  */
-router.post("/signup", registerUser);
+
 /**
  * @swagger
- * components:
- *   schemas:
- *     User:
- *       type: object
- *       required:
- *         - email
- *         - password
- *       properties:
- *         email:
- *           type: string
- *           description: The user email
- *         password:
- *           type: string
- *           description: The user password
- *
+ * tags:
+ *   name: Auth
+ *   description: Authentication and user management APIs
+ */
+
+/**
+ * @swagger
+ * /api/auth/signup:
+ *   post:
+ *     summary: Register a new user
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/User'
+ *     responses:
+ *       201:
+ *         description: User successfully registered
+ *       400:
+ *         description: Bad request, invalid input
+ */
+router.post("/signup", registerUser);
+
+/**
+ * @swagger
+ * /api/auth/login:
+ *   post:
+ *     summary: Log in a user
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 description: The user's email address
+ *               password:
+ *                 type: string
+ *                 description: The user's password
+ *             example:
+ *               email: john@example.com
+ *               password: securepassword123
+ *     responses:
+ *       200:
+ *         description: User successfully logged in
+ *       401:
+ *         description: Unauthorized, invalid credentials
  */
 router.post("/login", loginUser);
-router.post("/logout", protect, logoutUser);
-router.get("/", getAllUser);
 
-// router.put("/updateUser/:id", protect, updateUser);
-// router.delete("/removeUser/:id", protect, deleteUser);
-//router.get("/:id", getUserById);
+/**
+ * @swagger
+ * /api/auth/logout:
+ *   post:
+ *     summary: Log out the current user
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: User successfully logged out
+ *       401:
+ *         description: Unauthorized, user not logged in
+ */
+router.post("/logout", protect, logoutUser);
+
+/**
+ * @swagger
+ * /api/auth/:
+ *   get:
+ *     summary: Get all users
+ *     tags: [Auth]
+ *     responses:
+ *       200:
+ *         description: List of all users
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/User'
+ *       401:
+ *         description: Unauthorized, user not logged in
+ */
+router.get("/", getAllUser);
 
 module.exports = router;

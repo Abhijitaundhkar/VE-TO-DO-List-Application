@@ -1,6 +1,6 @@
-const User = require("../models/User");
+const User = require("../models/userModel");
 const bcryptjs = require("bcryptjs");
-const generateToken = require("../config/jwt");
+const generateToken = require("../config/generateJwtToken");
 
 exports.registerUser = async (req, res) => {
   try {
