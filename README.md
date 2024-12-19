@@ -1,7 +1,5 @@
 # VE3-TO-DO-List-Application
 
-# Practice-TO-DO-Assignment
-
 # Setup
 
 Clone the Repository:
