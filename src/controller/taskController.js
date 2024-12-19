@@ -21,10 +21,12 @@ exports.getTasks = async (req, res) => {
 exports.createTask = async (req, res) => {
   try {
     const { title, description, completed } = req.body;
+    //validate payload
     const { error } = taskValidationSchema.validate(req.body);
     if (error) {
       return res.status(400).json({ error: error.details[0].message });
     }
+    //if no error then we continue for creation
     const result = await Task.findOne({ title });
     if (result) {
       return res.status(400).json({ message: "Already Task Present" });
@@ -35,7 +37,7 @@ exports.createTask = async (req, res) => {
       completed,
       user: req.user._id,
     });
-
+    //save to db
     const createdTask = await task.save();
     return res.status(201).json(createdTask);
   } catch (error) {
@@ -46,7 +48,7 @@ exports.createTask = async (req, res) => {
 exports.updateTask = async (req, res) => {
   try {
     const task = await Task.findById(req.params.id);
-
+    //update the task if provided data other wise use as default
     if (task) {
       task.title = req.body.title || task.title;
       task.description = req.body.description || task.description;

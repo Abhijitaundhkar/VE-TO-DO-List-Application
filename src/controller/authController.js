@@ -68,6 +68,7 @@ exports.loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
+    //compare password
     const isPasswordCorrect = await bcryptjs.compare(
       password,
       user?.password || " "
@@ -90,6 +91,7 @@ exports.loginUser = async (req, res) => {
 
 exports.logoutUser = (req, res) => {
   try {
+    //remove token
     res.cookie("jwt", "", { maxAge: 0 });
     return res.status(200).json({ message: "Logout successfully" });
   } catch (error) {
