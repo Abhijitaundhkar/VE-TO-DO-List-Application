@@ -36,13 +36,14 @@ start application using without nodemon:npm run start
 
 # Folder Structure
 
-src->config->database connections and authentication configurations like JWT and swagger
+src->config->database connections and authentication configurations like JWT and swagger configuration
 
-src->controller->handling all your business logic.
+src->controller->handling all your business logic of task and user.
 
-src->routes->all app routes user and tasks
+src->routes->all routes of user and tasks
 
 Task API:
+
 GET /tasks : Fetch all tasks.
 
 GET /tasks/:id : Fetch a single task by its ID.
@@ -70,4 +71,4 @@ src->models->all database schema
 
 src->validation-> added jio validation for Api data
 
-main server.js file for run the server and other configurations are added
+server.js file for run the server and other main configurations are added
