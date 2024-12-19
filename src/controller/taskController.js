@@ -1,5 +1,5 @@
 const Task = require("../models/taskModel");
-
+const { taskValidationSchema } = require("../validations/validation");
 exports.getTasks = async (req, res) => {
   try {
     //add pagination for large data
@@ -21,7 +21,10 @@ exports.getTasks = async (req, res) => {
 exports.createTask = async (req, res) => {
   try {
     const { title, description, completed } = req.body;
-    //if (!title) return res.status(400).json({ message: "title is required" });
+    const { error } = taskValidationSchema.validate(req.body);
+    if (error) {
+      return res.status(400).json({ error: error.details[0].message });
+    }
     const result = await Task.findOne({ title });
     if (result) {
       return res.status(400).json({ message: "Already Task Present" });
@@ -55,7 +58,6 @@ exports.updateTask = async (req, res) => {
       return res.status(404).json({ message: "Task not found" });
     }
   } catch (err) {
-    console.log(err);
     return res.status(500).json({ error: err.message });
   }
 };
@@ -70,7 +72,6 @@ exports.deleteTask = async (req, res) => {
       return res.status(404).json({ message: "Task OR ID Not found" });
     }
   } catch (err) {
-    console.log(err);
     return res.status(500).json({ error: err.message });
   }
 };

@@ -1,19 +1,23 @@
 const User = require("../models/userModel");
 const bcryptjs = require("bcryptjs");
 const generateToken = require("../config/generateJwtToken");
+const { userValidationSchema } = require("../validations/validation");
 
-exports.registerUser = async (req, res) => {
+exports.registerUser = async (req, res, next) => {
   try {
     const { username, email, password, role } = req.body;
+    // Validate request body
+    const { error } = userValidationSchema.validate(req.body);
+    if (error) {
+      return res.status(400).json({ error: error.details[0].message });
+    }
     //Check user exists or not
     const userExists = await User.findOne({ email });
-    // if (!username || !email || !password) {
-    //   return res.status(400).json({ message: "add all required fields" });
-    // }
+
     if (userExists) {
       return res.status(400).json({ message: "User already exists" });
     }
-    //encrypt the password to
+    //encrypt the password
     const salt = await bcryptjs.genSalt(10);
     const hashPassWord = await bcryptjs.hash(password, salt);
     //save to db
@@ -33,7 +37,6 @@ exports.registerUser = async (req, res) => {
       return res.status(400).json({ message: "Invalid user data" });
     }
   } catch (error) {
-    console.log(error);
     return res.json({ error: error.message });
   }
 };
@@ -71,17 +74,16 @@ exports.loginUser = async (req, res) => {
     );
 
     if (!user || !isPasswordCorrect) {
-      return res.status(400).json({ error: "invalid user email or password" });
+      return res.status(400).json({ error: "Invalid user email or password" });
+    } else {
+      return res.status(201).json({
+        message: "Login successfully",
+        _id: user._id,
+        username: user.username,
+        token: generateToken(user._id, res),
+      });
     }
-
-    return res.status(201).json({
-      message: "Login successfully",
-      _id: user._id,
-      username: user.username,
-      token: generateToken(user._id, res),
-    });
   } catch (error) {
-    console.log("login error", error);
     return res.status(500).json({ "login error": error.message });
   }
 };
@@ -89,9 +91,8 @@ exports.loginUser = async (req, res) => {
 exports.logoutUser = (req, res) => {
   try {
     res.cookie("jwt", "", { maxAge: 0 });
-    res.status(200).json({ message: "Logout sucessfully" });
+    return res.status(200).json({ message: "Logout successfully" });
   } catch (error) {
-    console.log("logout error", error);
     return res.status(500).json({ "logout error": error.message });
   }
 };

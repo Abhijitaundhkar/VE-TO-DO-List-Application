@@ -1,7 +1,10 @@
 const express = require("express");
 const {
   registerUser,
+  updateUser,
+  deleteUser,
   getAllUser,
+  getUserById,
   loginUser,
   logoutUser,
 } = require("../controller/authController");
@@ -9,11 +12,12 @@ const { protect } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
+//all register and login routes
 /**
  * @swagger
  * components:
  *   schemas:
- *     User:
+ *     Auth:
  *       type: object
  *       required:
  *         - username
@@ -22,24 +26,24 @@ const router = express.Router();
  *       properties:
  *         username:
  *           type: string
- *           description: The user's username
+ *           description: The username of the user
  *         email:
  *           type: string
- *           description: The user's email address
+ *           description: The email address of the user
  *         password:
  *           type: string
- *           description: The user's password
+ *           description: The password for the user account
  *       example:
- *         username: john_doe
- *         email: john@example.com
- *         password: securepassword123
+ *         username: Alexander K. Dewdney
+ *         email: abc@gmail.com
+ *         password: secretPassword123
  */
 
 /**
  * @swagger
  * tags:
- *   name: Auth
- *   description: Authentication and user management APIs
+ *   name: User
+ *   description: User authentication and management API
  */
 
 /**
@@ -47,88 +51,37 @@ const router = express.Router();
  * /api/auth/signup:
  *   post:
  *     summary: Register a new user
- *     tags: [Auth]
+ *     tags: [User]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/User'
+ *             $ref: '#/components/schemas/Auth'
  *     responses:
  *       201:
  *         description: User successfully registered
- *       400:
- *         description: Bad request, invalid input
- */
-router.post("/signup", registerUser);
-
-/**
- * @swagger
- * /api/auth/login:
- *   post:
- *     summary: Log in a user
- *     tags: [Auth]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - email
- *               - password
- *             properties:
- *               email:
- *                 type: string
- *                 description: The user's email address
- *               password:
- *                 type: string
- *                 description: The user's password
- *             example:
- *               email: john@example.com
- *               password: securepassword123
- *     responses:
- *       200:
- *         description: User successfully logged in
- *       401:
- *         description: Unauthorized, invalid credentials
- */
-router.post("/login", loginUser);
-
-/**
- * @swagger
- * /api/auth/logout:
- *   post:
- *     summary: Log out the current user
- *     tags: [Auth]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: User successfully logged out
- *       401:
- *         description: Unauthorized, user not logged in
- */
-router.post("/logout", protect, logoutUser);
-
-/**
- * @swagger
- * /api/auth/:
- *   get:
- *     summary: Get all users
- *     tags: [Auth]
- *     responses:
- *       200:
- *         description: List of all users
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/User'
- *       401:
- *         description: Unauthorized, user not logged in
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: User created successfully
+ *       400:
+ *         description: Invalid input data
+ *       409:
+ *         description: User already exists
  */
-router.get("/", getAllUser);
+router.post("/signup", registerUser);
+
+router.post("/login", loginUser);
+router.post("/logout", protect, logoutUser);
+router.get("/allUser", getAllUser);
+
+// router.put("/updateUser/:id", protect, updateUser);
+// router.delete("/removeUser/:id", protect, deleteUser);
+//router.get("/:id", getUserById);
 
 module.exports = router;
