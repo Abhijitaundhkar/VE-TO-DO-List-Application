@@ -41,12 +41,28 @@ src->config->database connections and authentication configurations like JWT and
 src->controller->handling all your business logic.
 
 src->routes->all app routes user and tasks
-example:
+
+Task API:
 GET /tasks : Fetch all tasks.
+
 GET /tasks/:id : Fetch a single task by its ID.
+
 POST /tasks : Add a new task.
+
 PUT /tasks/:id : Update an existing task by its ID.
+
 DELETE /tasks/:id : Delete a task by its ID.
+
+User API:
+
+POST /auth/register : Register a new user.
+
+POST /auth/login : Log in and return a JWT token.
+
+DELETE /auth/logut : logut user and delete a JWT token.
+
+GET /allUser : Fetch all User.
+
 
 src->middleware->protect Api for not authentication user
 
