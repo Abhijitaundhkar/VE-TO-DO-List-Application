@@ -76,7 +76,7 @@ exports.loginUser = async (req, res) => {
     if (!user || !isPasswordCorrect) {
       return res.status(400).json({ error: "Invalid user email or password" });
     } else {
-      return res.status(201).json({
+      return res.status(200).json({
         message: "Login successfully",
         _id: user._id,
         username: user.username,
