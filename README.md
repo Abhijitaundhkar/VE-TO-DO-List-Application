@@ -26,7 +26,7 @@ code .
 
 npm install
 
-# Create/update env file add all your configuration
+# Create/Update env file add all your configuration provided file
 
 # Run Application
 
